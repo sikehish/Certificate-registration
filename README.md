@@ -1,1 +1,1 @@
-# GDSC-certificate-registration
+# Certificate-registration
