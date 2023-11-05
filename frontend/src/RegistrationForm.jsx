@@ -52,7 +52,9 @@ const RegistrationForm = () => {
   const handleRegistration = async (e) => {
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
-    } else {
+    } else if(!formData.usn.trim() || !formData.email.trim()) toast.error("Enter all the details!")
+    else if(formData.password.trim().length<8) toast.error("Password length must be atleast 8 characters")
+    else{
       try {
         // Use Firebase Authentication to register the user
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
