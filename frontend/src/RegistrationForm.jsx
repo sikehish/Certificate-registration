@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import { Alert, AlertTitle } from '@mui/material/Alert';
-import Toastify from 'toastify-js';
-import 'toastify-js/src/toastify.css';
+import { TextField, Button, Card, CardContent, Grid, Typography, Container, Box, Avatar } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -14,111 +10,88 @@ const RegistrationForm = () => {
     password: '',
     confirmPassword: '',
   });
-  const [error, setError] = useState(null);
 
-  const handleFormChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleRegistration = () => {
-    setError(null);
-
-    // Check if email or USN exists
-    const data = require('./data.json');
-    const { email, usn } = formData;
-    if (data.registrations.find((reg) => reg.email === email || reg.usn === usn)) {
-      setError('Email or USN already exists.');
-      return;
-    }
-
-    // Check if password matches confirmPassword
     if (formData.password !== formData.confirmPassword) {
-      setError('Password and Confirm Password do not match.');
-      return;
+      toast.error("Passwords do not match");
+    } else {
+      // Implement your validation and database logic here
+      // Display success message if registration is successful
+      toast.success("Successfully registered");
     }
-
-    // Save the registration data to the JSON file
-    data.registrations.push(formData);
-    // Save the updated data back to the JSON file
-
-    Toastify({
-      text: 'Successfully registered',
-      duration: 3000,
-      backgroundColor: 'green',
-    }).showToast();
-
-    setFormData({
-      email: '',
-      usn: '',
-      password: '',
-      confirmPassword: '',
-    });
   };
 
   return (
-    <Container maxWidth="sm">
-      <h1>GDSC JSS STU Certificate Registration</h1>
-      <Box mt={3}>
-        {error && (
-          <Alert severity="error">
-            <AlertTitle>Error</AlertTitle>
-            {error}
-          </Alert>
-        )}
+    <Container maxWidth="sm" style={{ display: 'flex',flexDirection:"column",  alignItems: 'center', justifyContent: 'center', textAlign: 'center', margin:"auto" }}>
+      <Box mt={4} display="flex" alignItems="center" justifyContent="center">
+        <Avatar src="/gdsc-logo.png" alt="GDSC Logo" sx={{ width: 100, height: 100 }} />
+        <Box ml={2}>
+          <Typography variant="h4">GDSC JSSSTU</Typography>
+          <Typography variant="h5">Certificate Registration</Typography>
+        </Box>
       </Box>
-      <Box mt={2}>
-        <TextField
-          name="email"
-          label="Email"
-          variant="outlined"
-          fullWidth
-          value={formData.email}
-          onChange={handleFormChange}
-        />
-      </Box>
-      <Box mt={2}>
-        <TextField
-          name="usn"
-          label="USN"
-          variant="outlined"
-          fullWidth
-          value={formData.usn}
-          onChange={handleFormChange}
-        />
-      </Box>
-      <Box mt={2}>
-        <TextField
-          name="password"
-          label="Password"
-          variant="outlined"
-          type="password"
-          fullWidth
-          value={formData.password}
-          onChange={handleFormChange}
-        />
-      </Box>
-      <Box mt={2}>
-        <TextField
-          name="confirmPassword"
-          label="Confirm Password"
-          variant="outlined"
-          type="password"
-          fullWidth
-          value={formData.confirmPassword}
-          onChange={handleFormChange}
-        />
-      </Box>
-      <Box mt={3}>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleRegistration}
-        >
-          Register
-        </Button>
-      </Box>
+      <Card sx={{ mt: 4 }}>
+        <CardContent>
+          <form>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  name="email"
+                  label="Email"
+                  fullWidth
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="usn"
+                  label="USN"
+                  fullWidth
+                  value={formData.usn}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="password"
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  value={formData.password}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  fullWidth
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={handleRegistration}
+                >
+                  Register
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </CardContent>
+      </Card>
+      <ToastContainer />
     </Container>
   );
 };
