@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Card, CardContent, Grid, Typography, Container, Box, Avatar } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import logo from "./assets/gdsc-logo.png"
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
@@ -45,7 +45,6 @@ const RegistrationForm = () => {
       email: formData.email,
       usn: formData.usn,
       password: formData.password,
-      confirmPassword: formData.confirmPassword
       // Add other fields as needed
     });
   };
@@ -53,7 +52,9 @@ const RegistrationForm = () => {
   const handleRegistration = async (e) => {
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
-    } else {
+    } else if(!formData.usn.trim() || !formData.email.trim()) toast.error("Enter all the details!")
+    else if(formData.password.trim().length<8) toast.error("Password length must be atleast 8 characters")
+    else{
       try {
         // Use Firebase Authentication to register the user
         const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
@@ -62,7 +63,9 @@ const RegistrationForm = () => {
         const user = userCredential.user;
         toast.success("Successfully registered");
 
-         //reset input field
+        const {email, usn, password} = formData
+        console.log({email,usn, password})
+        await storeUserDataInFirestore(user.uid, {email,usn, password});
 
         setFormData({
           email: '',
@@ -71,11 +74,9 @@ const RegistrationForm = () => {
           confirmPassword: '',
         })
 
-        // Store user-related data in Firestore if needed
-        await storeUserDataInFirestore(user.uid, formData);
       } catch (error) {
         console.error('Error registering the user:', error);
-        toast.error("Registration failed ,Invalid Email or Email already exist");
+        toast.error(`Error registering the user: ${error.message}`);
       }
     }
   };
@@ -83,7 +84,7 @@ const RegistrationForm = () => {
   return (
     <Container maxWidth="sm" style={{ display: 'flex', flexDirection: "column", alignItems: 'center', justifyContent: 'center', textAlign: 'center', margin: "auto" }}>
       <Box mt={4} display="flex" alignItems="center" justifyContent="center">
-        <Avatar src="/gdsc-logo.png" alt="GDSC Logo" sx={{ width: 100, height: 100 }} />
+        <Avatar src={logo} alt="GDSC Logo" sx={{ width: 100, height: 100 }} />
         <Box ml={2}>
           <Typography variant="h4">GDSC JSSSTU</Typography>
           <Typography variant="h5">Certificate Registration</Typography>
