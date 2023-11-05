@@ -45,7 +45,6 @@ const RegistrationForm = () => {
       email: formData.email,
       usn: formData.usn,
       password: formData.password,
-      confirmPassword: formData.confirmPassword
       // Add other fields as needed
     });
   };
@@ -63,7 +62,7 @@ const RegistrationForm = () => {
         toast.success("Successfully registered");
 
         const {email, usn, password} = formData
-
+        console.log({email,usn, password})
         await storeUserDataInFirestore(user.uid, {email,usn, password});
 
         setFormData({
@@ -75,7 +74,7 @@ const RegistrationForm = () => {
 
       } catch (error) {
         console.error('Error registering the user:', error);
-        toast.error('Error registering the user:', error);
+        toast.error(`Error registering the user: ${error.message}`);
       }
     }
   };
