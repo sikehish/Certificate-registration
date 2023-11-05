@@ -75,7 +75,7 @@ const RegistrationForm = () => {
         await storeUserDataInFirestore(user.uid, formData);
       } catch (error) {
         console.error('Error registering the user:', error);
-        toast.error("Registration failed , Email already exist");
+        toast.error("Registration failed ,Invalid Email or Email already exist");
       }
     }
   };
