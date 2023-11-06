@@ -42,7 +42,7 @@ const RegistrationForm = () => {
     // Store user-related data in Firestore
     const userDocRef = doc(db, "users", userId);
     await setDoc(userDocRef, {
-      email: formData.email,
+      // email: formData.email,
       usn: formData.usn,
       password: formData.password,
       // Add other fields as needed
